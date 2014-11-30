@@ -1,14 +1,13 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2011-05-29T18:19:15
+# Project created by QtCreator 2014-11-30
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui network widgets
 
-TARGET = Pong
+TARGET = WccPong
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -19,4 +18,6 @@ HEADERS  += mainwindow.h \
     gameplay.h \
     webcamcap.h
 
-FORMS    += mainwindow.ui
+FORMS += mainwindow.ui
+
+VERSION = 1.0

@@ -5,7 +5,7 @@
  * This file is part of WccPong.
  *
  * WccPong is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU LGPL version 3 as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -52,7 +52,6 @@ public slots:
 signals:
     void pointsReady(std::vector<glm::vec2> pts);
     void pointsReady(std::vector<glm::vec3> pts);
-
 
 private:
     std::vector<glm::vec3> getMessage3D(std::string msg);

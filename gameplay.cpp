@@ -5,7 +5,7 @@
  * This file is part of WccPong.
  *
  * WccPong is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU LGPL version 3 as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -34,9 +34,9 @@ Gameplay::Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2,
                    webcamcap::MyFifo *fifo):
     QObject(parent),
     iScene ( scene ),
-    iP1 ( p1 ),
-    iP2 ( p2 ),
-    iBall ( ball )
+    iP1 (p1),
+    iP2 (p2),
+    iBall (ball)
 {
     iScene.addItem(iP1);
     iScene.addItem(iP2);
@@ -52,6 +52,7 @@ Gameplay::Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2,
     QObject::connect(iTimer, SIGNAL(timeout()), this, SLOT(tick()));
     Players = 1;
 
+    QObject::connect(&iScene, SIGNAL(sceneRectChanged(const QRectF&)), this, SLOT(resize(const QRectF&)) );
 }
 
 void Gameplay::PauseGame(bool pause)
@@ -87,16 +88,11 @@ void Gameplay::setPlayers(size_t pl)
 
 void Gameplay::tick()
 {
-    //smer lopty
+    //ball direction
     qreal newX = iBall->pos().x() + iBallDirection.x();
     qreal newY = iBall->pos().y() + iBallDirection.y();
 
-    //smer oboch obdlznickov
-
-    qreal pnewx = iP1->pos().y() + iP1Direction;
-    qreal p2newx = iP2->pos().y() + iP2Direction;
-
-    //hranice gulicky
+    //edges of ball
     if ( ( newX < 0 ) || ( newX + iBall->boundingRect().right() > iScene.sceneRect().right() ) )
     {
         emit goal(newX / abs(newX));
@@ -108,7 +104,7 @@ void Gameplay::tick()
         iBallDirection.ry() *= -1;
     }
 
-    //kolizie
+    //colisions
     if ( ( iP1->collidesWithItem(iBall) ) && ( iBallDirection.x() < 0 ) )
     {
         iBallDirection.rx() *= -1;
@@ -122,6 +118,8 @@ void Gameplay::tick()
     //OP AI
     if(Players == 1)
     {
+        qreal p2newx = iP2->pos().y() + iP2Direction;
+
         if ( ( p2newx < 0 ) || ( p2newx + iP2->boundingRect().top() > iScene.sceneRect().bottom() - 80 ) )
         {
             iP2Direction = 0;
@@ -139,7 +137,7 @@ void Gameplay::tick()
     }
 
 
-    //pohyb
+    //movement
     iBall->moveBy(iBallDirection.x(), iBallDirection.y());
 
     iP1->setPos(iP1->pos().x(), posY1);
@@ -189,8 +187,6 @@ bool Gameplay::verifyDistance(glm::vec2 point1, glm::vec2 point2, float max)
 
 void Gameplay::setPoints(std::vector<glm::vec2> pts)
 {
-    std::cout << pts.size()<<std::endl;
-
     if(!pts.empty())
     {
         posY1 = pts[0].y * iScene.height();
@@ -208,4 +204,10 @@ void Gameplay::setPoints(std::vector<glm::vec2> pts)
             posY2 = pts[0].y * iScene.height();
         }
     }
+}
+
+void Gameplay::resize(const QRectF &)
+{
+    iP1->setPos(5, iScene.height()/2-40);
+    iP2->setPos(iScene.width()-25, iScene.height()/2-40);
 }

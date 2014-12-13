@@ -5,7 +5,7 @@
  * This file is part of WccPong.
  *
  * WccPong is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU LGPL version 3 as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -25,9 +25,6 @@
 #include <string>
 #include <sstream>
 
-#include <QDebug>
-#include <QLocalSocket>
-
 using namespace webcamcap;
 
 MyFifo::MyFifo::MyFifo()
@@ -36,30 +33,34 @@ MyFifo::MyFifo::MyFifo()
 
     socket = new QLocalSocket();
     socket->setReadBufferSize(1024);
+    socket->setServerName("webcamcap6");
 
     QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(handleMessage()));
     blockSize = 0;
+    std::cout << "created" << std::endl;
 }
 
 MyFifo::~MyFifo()
 {
     delete socket;
+    std::cout << "deleted" << std::endl;
 }
 
 bool MyFifo::connectServer()
-{
-    socket->connectToServer("webcamcap6");
-
-    return true;
+{ 
+    return socket->open();
+    std::cout << "opened" << std::endl;
 }
 
 void MyFifo::disconnectServer()
 {
     socket->disconnectFromServer();
+    std::cout << "disconnected" << std::endl;
 }
 
 void MyFifo::handleMessage()
 {
+    std::cout << "handle" << std::endl;
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_4_0);
 
@@ -72,7 +73,7 @@ void MyFifo::handleMessage()
 
     if (in.atEnd())
     {
-        std::cout << "neprijalo" << std::endl;
+        std::cout << "empty message" << std::endl;
         return;
     }
 
@@ -81,6 +82,7 @@ void MyFifo::handleMessage()
 
     std::string msg;
     msg = qmsg.toStdString();
+    std::cout << msg << std::endl;
 
     if(msg[1] == '2')
     {
@@ -121,6 +123,7 @@ std::vector<glm::vec3> MyFifo::getMessage3D(std::string msg)
     }
 
     return ret;
+    std::cout << "3D" << std::endl;
 }
 
 std::vector<glm::vec2> MyFifo::getMessage2D(std::string msg)
@@ -131,7 +134,6 @@ std::vector<glm::vec2> MyFifo::getMessage2D(std::string msg)
 
     split >> trash;
     split >> NumOfPoints;
-    std::cout << NumOfPoints << std::endl;
     float x, y;
     std::vector<glm::vec2> ret;
 
@@ -141,6 +143,7 @@ std::vector<glm::vec2> MyFifo::getMessage2D(std::string msg)
         split >> x;
         split >> y;
 
+        std::cout << x << " " << y << std::endl;
         ret.push_back(glm::vec2(x,y));
     }
 

@@ -49,9 +49,9 @@ ControlPanel::ControlPanel(QWidget *parent) :
 
 
     minSensitivity = ui->sensitivity->value();
-    minSpeed = ui->speed->value();
-    minSize = ui->size->value();
-    minAcceleration = ui->acceleration->value();
+    minSpeed = ui->speed->value()*0.01f;
+    minSize = ui->size->value()*0.01f;
+    minAcceleration = ui->acceleration->value()*0.01f;
     timeout = ui->timeout->value();
 
     if(ui->movement->checkState() == Qt::Checked)
@@ -151,7 +151,7 @@ void ControlPanel::handleMovements(std::vector<glm::vec2> &pts)
     {
         diff.push_back(points[i] - lastPoints[i]);
 
-        //std::cout << glm::abs(diff[i].x) + glm::abs(diff[i].y) << " " << minSpeed << std::endl;
+        std::cout << minSpeed << std::endl;
         difTemp = sqrt(diff[i].x * diff[i].x + diff[i].y*diff[i].y);
         if(difTemp > minSpeed)
         {
@@ -209,17 +209,17 @@ void ControlPanel::on_sensitivity_valueChanged(double arg1)
 
 void ControlPanel::on_speed_valueChanged(double arg1)
 {
-    minSpeed = arg1*0.01d;
+    minSpeed = arg1*0.01f;
 }
 
 void ControlPanel::on_acceleration_valueChanged(double arg1)
 {
-    minAcceleration = arg1*0.01d;
+    minAcceleration = arg1*0.01f;
 }
 
 void ControlPanel::on_size_valueChanged(double arg1)
 {
-    minSize = arg1*0.01d;
+    minSize = arg1*0.01;
 }
 
 void ControlPanel::on_timeout_valueChanged(int arg1)

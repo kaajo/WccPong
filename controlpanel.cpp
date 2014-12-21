@@ -1,3 +1,24 @@
+/*
+ *
+ * Copyright (C) 2014  Miroslav Krajicek (https://github.com/kaajo) . All Rights Reserved.
+ *
+ * This file is part of WccAPI.
+ *
+ * WccAPI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU LGPL version 3 as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * WccAPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU  LGPL version 3
+ * along with WccAPI.  If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
+ *
+ */
+
 #include "controlpanel.h"
 #include "ui_controlpanel.h"
 
@@ -149,7 +170,7 @@ void ControlPanel::handleMovements(std::vector<glm::vec2> &pts)
 
     for(size_t i = 0; i < pts.size(); i++)
     {
-        diff.push_back(points[i] - lastPoints[i]);
+        diff.push_back((points[i] - lastPoints[i])*minSensitivity);
 
         std::cout << minSpeed << std::endl;
         difTemp = sqrt(diff[i].x * diff[i].x + diff[i].y*diff[i].y);

@@ -33,6 +33,7 @@
 
 
 #include <iostream>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -53,17 +54,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->boardView->setScene(scene);
 
-    iLoop = new Gameplay(*scene, p1, p2, ball, this, &fifo);
+    iLoop = new Gameplay(*scene, p1, p2, ball, this);
     QSize m(scene->sceneRect().size().width() + 10, scene->sceneRect().size().height() + 10);
     ui->boardView->setMinimumSize(m);
     ui->boardView->installEventFilter(iLoop);
 
     QObject::connect(iLoop, SIGNAL(goal(int)),
                      this, SLOT(addScore(int)));
+
+
+    panel =  new ControlPanel(this);
+    connect(panel, SIGNAL(pointsReady(std::vector<glm::vec2>)), iLoop, SLOT(setPoints(std::vector<glm::vec2>)));
+
+    panel->show();
 }
 
 MainWindow::~MainWindow()
 {
+    delete panel;
+    delete iLoop;
     delete ui;
 }
 
@@ -86,11 +95,15 @@ void MainWindow::on_checkBox_clicked(bool checked)
 {
     if(checked)
     {
-        if(!fifo.connectServer())
+        if(!panel->connectServer())
         {
             QMessageBox::warning(this, QString("Warning"), QString("Could not connect to main WebCamCap program"));
             ui->checkBox->setChecked(false);
         }
+    }
+    else
+    {
+        panel->disconnectServer();
     }
 }
 

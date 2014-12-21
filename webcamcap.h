@@ -34,7 +34,7 @@ class MyFifo : public QObject
 {
     Q_OBJECT
 
-    bool HaveConnection;
+    bool haveConnection;
     char Buf[1024];
 
     QLocalSocket *socket;
@@ -45,7 +45,7 @@ public:
 
     bool connectServer();
     void disconnectServer();
-    bool getConnected() {return HaveConnection;}
+    bool getConnected() {return haveConnection;}
 public slots:
     void handleMessage();
 

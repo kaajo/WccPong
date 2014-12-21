@@ -27,9 +27,9 @@
 
 using namespace webcamcap;
 
-MyFifo::MyFifo::MyFifo()
+MyFifo::MyFifo()
 {
-    HaveConnection = false;
+    haveConnection = false;
 
     socket = new QLocalSocket();
     socket->setReadBufferSize(1024);
@@ -48,19 +48,26 @@ MyFifo::~MyFifo()
 
 bool MyFifo::connectServer()
 { 
-    return socket->open();
-    std::cout << "opened" << std::endl;
+    if(!haveConnection)
+    {
+        std::cout << "opened" << std::endl;
+        haveConnection = socket->open();
+    }
+
+    return haveConnection;
 }
 
 void MyFifo::disconnectServer()
 {
-    socket->disconnectFromServer();
-    std::cout << "disconnected" << std::endl;
+    if(haveConnection)
+    {
+        socket->disconnectFromServer();
+        std::cout << "disconnected" << std::endl;
+    }
 }
 
 void MyFifo::handleMessage()
 {
-    std::cout << "handle" << std::endl;
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_4_0);
 
@@ -82,7 +89,6 @@ void MyFifo::handleMessage()
 
     std::string msg;
     msg = qmsg.toStdString();
-    std::cout << msg << std::endl;
 
     if(msg[1] == '2')
     {
@@ -122,8 +128,9 @@ std::vector<glm::vec3> MyFifo::getMessage3D(std::string msg)
         ret.push_back(glm::vec3(x,y,z));
     }
 
-    return ret;
+
     std::cout << "3D" << std::endl;
+    return ret;
 }
 
 std::vector<glm::vec2> MyFifo::getMessage2D(std::string msg)
@@ -142,8 +149,6 @@ std::vector<glm::vec2> MyFifo::getMessage2D(std::string msg)
         split >> trash;
         split >> x;
         split >> y;
-
-        std::cout << x << " " << y << std::endl;
         ret.push_back(glm::vec2(x,y));
     }
 

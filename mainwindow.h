@@ -24,7 +24,7 @@
 
 #include <QMainWindow>
 
-#include "webcamcap.h"
+#include "controlpanel.h"
 
 class Gameplay;
 
@@ -38,10 +38,10 @@ class MainWindow : public QMainWindow
 
     Ui::MainWindow *ui;
     Gameplay *iLoop;
+    ControlPanel *panel;
     int iScore1;
     int iScore2;
 
-    webcamcap::MyFifo fifo;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

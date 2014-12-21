@@ -28,7 +28,8 @@
 
 #include <glm/glm.hpp>
 
-#include <webcamcap.h>
+#include "webcamcap.h"
+#include "controlpanel.h"
 
 class QGraphicsItem;
 class QTimer;
@@ -51,13 +52,10 @@ class Gameplay : public QObject
     bool Paused;
     size_t Players;
 
-    webcamcap::MyFifo *Fifo;
-
     std::vector<glm::vec2> Points;
 
 public:
-    explicit Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2, QGraphicsItem *ball, QObject *parent,
-                      webcamcap::MyFifo *fifo);
+    explicit Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2, QGraphicsItem *ball, QObject *parent);
 
     void PauseGame(bool pause);
     void Restart();
@@ -76,8 +74,8 @@ private slots:
 private:
     qreal calculateP2Direction();
     void defaultParams();
-    void analyzeMessage();
-    bool verifyDistance(glm::vec2 point1, glm::vec2 point2, float max);
+    //void analyzeMessage();
+    //bool verifyDistance(glm::vec2 point1, glm::vec2 point2, float max);
 };
 
 #endif // GAMEPLAY_H

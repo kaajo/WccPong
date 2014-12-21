@@ -12,12 +12,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gameplay.cpp \
-    webcamcap.cpp
+    webcamcap.cpp \
+    controlpanel.cpp
 
 HEADERS  += mainwindow.h \
     gameplay.h \
-    webcamcap.h
+    webcamcap.h \
+    controlpanel.h
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    controlpanel.ui
 
 VERSION = 1.0

@@ -30,8 +30,7 @@
 
 #include <iostream>
 
-Gameplay::Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2, QGraphicsItem *ball, QObject *parent,
-                   webcamcap::MyFifo *fifo):
+Gameplay::Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2, QGraphicsItem *ball, QObject *parent):
     QObject(parent),
     iScene ( scene ),
     iP1 (p1),
@@ -43,9 +42,6 @@ Gameplay::Gameplay(QGraphicsScene & scene, QGraphicsItem *p1, QGraphicsItem *p2,
     iScene.addItem(iBall);
 
     defaultParams();
-
-    Fifo = fifo;
-    connect(Fifo, SIGNAL(pointsReady(std::vector<glm::vec2>)), this, SLOT(setPoints(std::vector<glm::vec2>)));
 
     iTimer = new QTimer(this);
     iTimer->setInterval(16);
@@ -149,12 +145,12 @@ qreal Gameplay::calculateP2Direction()
 
     if ( iBall->pos().y() + iBallDirection.y() > iP2->sceneBoundingRect().top() )
     {
-        // move right
+        // move up
         dir = 5;
     }
     else if ( iBall->pos().y() + iBallDirection.y() < iP2->sceneBoundingRect().bottom() )
     {
-        // move left
+        // move down
         dir = -5;
     }
 
@@ -175,15 +171,10 @@ void Gameplay::defaultParams()
     posY2 = iScene.height()/2-40;
 }
 
-void Gameplay::analyzeMessage()
-{
-    Fifo->handleMessage();
-}
-
-bool Gameplay::verifyDistance(glm::vec2 point1, glm::vec2 point2, float max)
+/*bool Gameplay::verifyDistance(glm::vec2 point1, glm::vec2 point2, float max)
 {
     return (glm::distance(point1, point2) < max);
-}
+}*/
 
 void Gameplay::setPoints(std::vector<glm::vec2> pts)
 {
@@ -204,6 +195,7 @@ void Gameplay::setPoints(std::vector<glm::vec2> pts)
             posY2 = pts[0].y * iScene.height();
         }
     }
+
 }
 
 void Gameplay::resize(const QRectF &)

@@ -171,8 +171,6 @@ void ControlPanel::handleMovements(std::vector<glm::vec2> &pts)
     for(size_t i = 0; i < pts.size(); i++)
     {
         diff.push_back((points[i] - lastPoints[i])*minSensitivity);
-
-        std::cout << minSpeed << std::endl;
         difTemp = sqrt(diff[i].x * diff[i].x + diff[i].y*diff[i].y);
         if(difTemp > minSpeed)
         {
